@@ -89,12 +89,11 @@ function! neomake#fix#entry(action, entry) abort
                 call neomake#log#info(printf('%s: fixed %s => %s (line %d).', maker.name, string(old), string(replacement[0]), start), {'bufnr': a:entry.bufnr})
             endif
 
-            try
-                call neomake#compat#buf_set_lines(a:entry.bufnr, start, end, replacement)
-            catch
-                call neomake#log#error(printf('Fixing entry failed: %s.', v:exception))
+            let err = neomake#compat#buf_set_lines(a:entry.bufnr, start, end, replacement)
+            if !empty(err)
+                call neomake#log#error(printf('Fixing entry failed: %s.', err))
                 return
-            endtry
+            endif
 
         " elseif action ==# 'append'
         "     let [lnum, lines] = args

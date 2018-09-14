@@ -339,27 +339,27 @@ endif
 if exists('*nvim_buf_set_lines')
     function! neomake#compat#buf_set_lines(bufnr, start, end, replacement) abort
         if a:start < 1
-            throw 'neomake#compat#buf_set_lines: start is lower than 1'
+            return 'neomake#compat#buf_set_lines: start is lower than 1'
         endif
         try
             call nvim_buf_set_lines(a:bufnr, a:start-1, a:end-1, 1, a:replacement)
         catch
             " call neomake#log#error('Fixing entry failed (out of bounds)')
-            throw 'neomake#compat#buf_set_lines: '.substitute(v:exception, '\v^[^:]+:', '', '')
+            return 'neomake#compat#buf_set_lines: '.substitute(v:exception, '\v^[^:]+:', '', '')
         endtry
+        return ''
     endfunction
 else
     function! neomake#compat#buf_set_lines(bufnr, start, end, replacement) abort
         if a:bufnr != bufnr('%')
-            throw 'neomake#compat#buf_set_lines: used for non-current buffer'
+            return 'neomake#compat#buf_set_lines: used for non-current buffer'
         endif
 
         if a:start < 1
-            throw 'neomake#compat#buf_set_lines: start is lower than 1'
+            return 'neomake#compat#buf_set_lines: start is lower than 1'
         endif
         if a:end > line('$')+1
-            throw 'neomake#compat#buf_set_lines: end is higher than number of lines'
-            return
+            return 'neomake#compat#buf_set_lines: end is higher than number of lines'
         endif
 
         if a:start == a:end
@@ -383,5 +383,6 @@ else
                 endwhile
             endif
         endif
+        return ''
     endfunction
 endif
