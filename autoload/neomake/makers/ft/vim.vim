@@ -44,6 +44,21 @@ function! neomake#makers#ft#vim#vint() abort
         endif
         return support
     endfunction
+
+    function! maker.fix_entry(entry, action) abort
+        if a:action ==# 'ignore'
+            let policy = matchstr(a:entry.text, '\v\(\zs.{-}\ze\)$')
+            if !empty(policy)
+                return [
+                            \ ['setlines', a:entry.lnum+1, a:entry.lnum+1, [
+                            \ '" vint: +'.policy]],
+                            \ ['setlines', a:entry.lnum, a:entry.lnum, [
+                            \ '" vint: -'.policy]],
+                            \ ]
+            endif
+        endif
+    endfunction
+
     return maker
 endfunction
 
