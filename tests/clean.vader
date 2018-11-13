@@ -1,0 +1,31 @@
+Include: include/setup.vader
+
+Execute (NeomakeClean: no-op):
+  NeomakeClean
+  NeomakeClean!
+
+Execute (NeomakeClean: file-mode):
+  Save g:neomake_open_list
+  let g:neomake_open_list = 2
+
+  new
+  CallNeomake 1, [g:entry_maker]
+
+  NeomakeClean
+
+  " TODO: close automatically?!
+  lclose
+  bwipe
+
+Execute (NeomakeClean: project-mode):
+  Save g:neomake_open_list
+  let g:neomake_open_list = 2
+
+  new
+  CallNeomake 0, [g:entry_maker]
+
+  NeomakeClean!
+
+  " TODO: close automatically?!
+  cclose
+  bwipe

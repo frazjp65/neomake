@@ -68,3 +68,19 @@ endfunction
 function! neomake#cmd#complete_jobs(...) abort
     return join(map(neomake#GetJobs(), "v:val.id.': '.v:val.maker.name"), "\n")
 endfunction
+
+function! neomake#cmd#clean(file_mode) abort
+    if a:file_mode
+        let buf = bufnr('%')
+        call neomake#highlights#ResetFile(buf)
+        call neomake#signs#ResetFile(buf)
+        call neomake#signs#ResetFile(buf)
+        call neomake#statusline#ResetCountsForBuf(buf)
+    else
+        call neomake#highlights#ResetProject()
+        call neomake#signs#ResetProject()
+        call neomake#signs#ResetProject()
+        call neomake#statusline#ResetCountsForProject()
+    endif
+    call neomake#EchoCurrentError(1)
+endfunction

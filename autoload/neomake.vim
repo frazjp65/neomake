@@ -1700,11 +1700,8 @@ function! s:clean_for_new_make(make_info) abort
         call neomake#log#debug('File-level errors cleaned.',
                     \ {'make_id': a:make_info.options.make_id, 'bufnr': bufnr})
     else
-        " TODO: test
-        for buf in keys(s:current_errors.project)
-            unlet s:current_errors['project'][buf]
-            call neomake#highlights#ResetProject(+buf)
-        endfor
+        let s:current_errors['project'] = {}
+        call neomake#highlights#ResetProject()
     endif
     let a:make_info.cleaned_for_make = 1
 endfunction
