@@ -70,14 +70,24 @@ function! neomake#cmd#complete_jobs(...) abort
 endfunction
 
 function! neomake#cmd#clean(file_mode) abort
+    let buf = bufnr('%')
+    call neomake#_clean_errors({
+          \ 'file_mode': a:file_mode,
+          \ 'bufnr': buf,
+          \ })
     if a:file_mode
-        let buf = bufnr('%')
-        call neomake#highlights#ResetFile(buf)
+        call setloclist(0, [], 'r')  " TODO: only with Neomake's list.
+        lclose
+
+        " HACK: improve API
         call neomake#signs#ResetFile(buf)
         call neomake#signs#ResetFile(buf)
         call neomake#statusline#ResetCountsForBuf(buf)
     else
-        call neomake#highlights#ResetProject()
+        call setqflist([], 'r')  " TODO: only with Neomake's list.
+        cclose
+
+        " HACK: improve API
         call neomake#signs#ResetProject()
         call neomake#signs#ResetProject()
         call neomake#statusline#ResetCountsForProject()
